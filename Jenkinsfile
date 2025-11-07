@@ -47,9 +47,21 @@ pipeline {
         stage('Construyendo y desplegando servicios...') {
             steps {
                 bat '''
-                    docker compose -p adj-demo-c down --remove-orphans || exit /b 0
-                    docker rm -f adj-database 2>nul || exit /b 0
-                    docker compose up --build -d
+                    @echo off
+                    echo Limpiando contenedores previos...
+                    for /f "tokens=*" %%c in ('docker ps -a -q --filter "name=adj-database"') do (
+                        echo Eliminando contenedor conflictivo: %%c
+                        docker rm -f %%c
+                    )
+
+                    echo Bajando servicios antiguos...
+                    docker compose -p adj-demo-c2 down --remove-orphans || exit /b 0
+
+                    echo Reconstruyendo y levantando servicios nuevos...
+                    docker compose -p adj-demo-c2 up --build -d
+
+                    echo Servicios levantados correctamente.
+                    exit /b 0
                 '''
             }
         }
