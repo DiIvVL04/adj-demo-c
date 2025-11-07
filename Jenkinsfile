@@ -47,6 +47,8 @@ pipeline {
         stage('Construyendo y desplegando servicios...') {
             steps {
                 bat '''
+                    docker compose -p adj-demo-c down --remove-orphans || exit /b 0
+                    docker rm -f adj-database 2>nul || exit /b 0
                     docker compose up --build -d
                 '''
             }
