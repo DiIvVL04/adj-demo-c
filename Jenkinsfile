@@ -6,7 +6,7 @@ pipeline {
         stage('Parando los servicios...') {
             steps {
                 bat '''
-                    docker compose -p adj-demo-c down || exit /b 0
+                    docker compose -p adj-demo-c2 down || exit /b 0
                 '''
             }
         }
@@ -19,7 +19,7 @@ pipeline {
             setlocal enabledelayedexpansion
             set "found="
 
-            for /f "tokens=*" %%i in ('docker images --filter "label=com.docker.compose.project=adj-demo-c" -q') do (
+            for /f "tokens=*" %%i in ('docker images --filter "label=com.docker.compose.project=adj-demo-c2" -q') do (
                 set "found=1"
                 docker rmi -f %%i
             )
